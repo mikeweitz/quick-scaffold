@@ -51,4 +51,26 @@ mkdir('./pages')
       });
     })
   )
+  .then(
+    () => {
+      const filename = 'package.json'
+      const scripts = {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "test": "echo \"Error: no test specified\" && exit 1",
+      }
+
+      process.stdout.write(`Adding Nextjs scripts to ${filename}...`);
+
+      const data = require(fileName);
+      data.scripts = { ...scripts }
+      fs.writeFile(fileName, JSON.stringify(file), function writeJSON(err) {
+        if (err) {
+          return console.warn(err);
+        }
+        process.stdout.write(`${filename} updated`);
+      });
+    }
+)
   .catch(err => console.log('error creating `pages` folder:', err.message));
