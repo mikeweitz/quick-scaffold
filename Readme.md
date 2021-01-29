@@ -10,6 +10,15 @@ Run the installer to clone base files and install packages.
 ./init.sh
 ```
 
+## local dev
+
+install will add the default NextJS scripts to package.json  
+for localhost run
+
+```bash
+npm run dev
+```
+
 ## What's Set up already:
 
 - NextJS,
