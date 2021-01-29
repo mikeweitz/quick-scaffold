@@ -3,7 +3,6 @@ const path = require('path');
 const fs = require('fs');
 const cp = require('child_process');
 const { promisify } = require('util');
-
 const writeFile = promisify(fs.writeFile);
 const mkdir = promisify(fs.mkdir);
 
@@ -44,33 +43,32 @@ mkdir('./pages')
         if (err) {
           console.log(`Error requesting ${filename}:`, err.message);
         } else {
-          writeFile('./static/styles/' + filename, body).catch(err =>
+          writeFile(`./static/styles/${filename}`, body).catch(err =>
             console.log(`Error writing to ${filename}:`, err)
           );
         }
       });
     })
   )
-  .then(
-    () => {
-      const filename = 'package.json'
-      const scripts = {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start",
-        "test": "echo \"Error: no test specified\" && exit 1",
-      }
-
-      process.stdout.write(`Adding Nextjs scripts to ${filename}...`);
-
-      const data = require(fileName);
-      data.scripts = { ...scripts }
-      fs.writeFile(fileName, JSON.stringify(file), function writeJSON(err) {
-        if (err) {
-          return console.warn(err);
-        }
-        process.stdout.write(`${filename} updated`);
-      });
-    }
-)
   .catch(err => console.log('error creating `pages` folder:', err.message));
+
+  process.stdout.write(`Adding Nextjs scripts to package.json...\n`);
+  const filename = 'package.json'
+  const data = JSON.parse(fs.readFileSync(filename));
+  data.scripts = {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+  }
+
+  // fs.writeFile(filename, JSON.stringify(data), function writeJSON(err) {
+  //   if (err) {
+  //     return console.warn('Error writing file', err);
+  //   }
+  //   process.stdout.write(`${filename} updated`);
+  // });
+  writeFile(filename, JSON.stringify(data))
+    .catch((err) => {
+      console.log(`Error writing to ${filename}:`, err);
+    })
